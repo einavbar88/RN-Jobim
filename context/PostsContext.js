@@ -1,6 +1,5 @@
-import axios from 'axios';
-import React, { useReducer, useState } from 'react';
-import { serverUrl } from '../env/env';
+import React, { useEffect, useReducer, useState } from 'react';
+import { getCurrentLocation } from '../auxFunc';
 import NewPostReducer, { initialState } from '../reducers/NewPostReducer';
 
 
@@ -16,11 +15,28 @@ const PostsProvider = (props) => {
         location: { ...initialState.location }
     })
 
+    const [phoneLocation, setPhoneLocation] = useState(null);
+    const [location, setLocation] = useState({})
+    const [jobsList, setJobsList] = useState([])
+
+
+    useEffect(() => {
+        getCurrentLocation(setPhoneLocation);
+    }, [])
+
+    useEffect(() => {
+        if (phoneLocation) {
+            const { longitude, latitude } = phoneLocation.coords
+            setLocation({ lat: latitude, lng: longitude })
+        }
+    }, [phoneLocation])
 
     return (
         <PostsContext.Provider
             value={{
-                newPostDetails, dispatchNewPostDetails
+                newPostDetails, dispatchNewPostDetails,
+                location, jobsList, setJobsList,
+
             }}
         >
             {props.children}

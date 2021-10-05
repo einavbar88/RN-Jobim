@@ -10,15 +10,19 @@ export const initialState = {
     },
     location: '',
     locationValid: false,
-    attachment: ''
+    locationArr: [],
+    addressText: { city: '', street: '', number: '' },
+    attachment: '',
+    ownerId: ''
 }
 
 
 export default (state = initialState, action) => {
-    let current = { ...state, name: { ...state.name }, description: { ...state.description } }
+    let current = { ...state, name: { ...state.name }, description: { ...state.description }, locationArr: { ...state.locationArr }, addressText: { ...state.addressText } }
     switch (action.type) {
         case "COMPANY_NAME":
             current.name.name = action.name
+            current.ownerId = action.ownerId
             break
         case "BRANCH":
             current.name.branch = action.branch
@@ -35,13 +39,17 @@ export default (state = initialState, action) => {
         case "JOB_LOCATION":
             if (action.location)
                 current.location = action.location
-            if (action.locationValid)
+            if (action.locationValid) {
                 current.locationValid = action.locationValid
+                current.addressText = action.addressText
+                current.locationArr = action.locationArr
+
+            }
             else
                 current.locationValid = false
             break
         case "ATTACHMENT":
-            current.attachment = action.attachment
+            current.attachment = current.attachment
             break
         case "RESET":
             return initialState

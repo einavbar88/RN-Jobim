@@ -9,13 +9,14 @@ import JobDescription from './new-job/JobDescription';
 import { PostsContext } from '../context/PostsContext';
 import JobLocation from './new-job/JobLocation';
 import Attachments from './new-job/Attachments';
+import { saveNewPost } from '../auxFunc';
 
 export const newJobPostScreenOptions = (navigation, route, props) => ({
     headerRight: () => {
         const routeName = getFocusedRouteNameFromRoute(route) ?? 'name';
-        const { newPostDetails } = props
+        const { newPostDetails, storageToken } = props
 
-        const onPressNext = () => {
+        const onPressNext = async () => {
             switch (routeName) {
                 case "name":
                     if (newPostDetails.name.name !== '')
@@ -34,6 +35,8 @@ export const newJobPostScreenOptions = (navigation, route, props) => ({
                         navigation.navigate("attachment")
                     break
                 case "attachment":
+                    saveNewPost(newPostDetails, storageToken)
+                        .then(res => navigation.navigate('MainScreen'))
                     break
             }
         }
@@ -67,10 +70,6 @@ const NewJobPostScreen = () => {
     useEffect(() => {
         dispatchNewPostDetails({ type: 'RESET' })
     }, [])
-
-    useEffect(() => {
-        console.log(newPostDetails.locationValid)
-    }, [newPostDetails])
 
 
     return (

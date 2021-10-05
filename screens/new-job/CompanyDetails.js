@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { Dimensions, Image, StyleSheet, Text, View } from 'react-native';
 import CustomInput from '../../components/ui/CustomInput';
 import { PostsContext } from '../../context/PostsContext';
+import { UsersContext } from '../../context/UsersContext';
 import colors from '../../styles/colors';
 
 const windowWidth = Dimensions.get('window').width;
@@ -9,9 +10,10 @@ const windowWidth = Dimensions.get('window').width;
 const CompanyDetails = () => {
 
     const { newPostDetails, dispatchNewPostDetails } = useContext(PostsContext)
+    const { user } = useContext(UsersContext)
 
     const onChangeName = (name) => {
-        dispatchNewPostDetails({ type: "COMPANY_NAME", name })
+        dispatchNewPostDetails({ type: "COMPANY_NAME", name, ownerId: user.user._id })
     }
     const onChangeBranch = (branch) => {
         dispatchNewPostDetails({ type: "BRANCH", branch })

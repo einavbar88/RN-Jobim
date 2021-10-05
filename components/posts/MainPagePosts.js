@@ -1,39 +1,27 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { StyleSheet, View, TouchableOpacity, Text, Image, Dimensions } from 'react-native';
 import jobs from '../../data/jobs'
 import LocationBar from "./LocationBar";
 import PostPage from "./PostPage";
 
-import { getCoordinates, getCurrentLocation, getDistanceFromLatLonInKm } from "../../auxFunc";
+import { getDistanceFromLatLonInKm } from "../../auxFunc";
+import { PostsContext } from "../../context/PostsContext";
 
+const windowWidth = Dimensions.get('window').width;
 
 const MainPagePosts = ({ data, onPress, isPostPage }) => {
 
-    const { company, branch, role, adTitle, address, imageUrl } = data
+    const { company, branch, role, adTitle, coords, addressText, imageUrl } = data.item
 
-    const [location, setLocation] = useState(null);
-    const [coordinates, setCoordinates] = useState(null)
+    const { location } = useContext(PostsContext)
     const [distance, setDistance] = useState(null)
 
-
     useEffect(() => {
-        getCoordinates(address, setCoordinates)
-        getCurrentLocation(setLocation);
-        return () => {
-            setDistance(null)
-            setCoordinates(null)
-            setLocation(null)
-        }
-    }, []);
-
-
-    useEffect(() => {
-        if (coordinates && location && !distance) {
-            const { longitude, latitude } = location.coords
-            const dist = getDistanceFromLatLonInKm(latitude, longitude, coordinates[0], coordinates[1])
+        if (location && !distance) {
+            const dist = getDistanceFromLatLonInKm(location.lat, location.lng, coords.lat, coords.lng)
             setDistance(dist.toFixed(3))
         }
-    }, [coordinates, location])
+    }, [location])
 
 
     return (
@@ -46,14 +34,14 @@ const MainPagePosts = ({ data, onPress, isPostPage }) => {
             {imageUrl ?
                 <View style={styles.postImageContainer}>
                     <View style={{ ...styles.shape, borderTopColor: jobs[role].color, }} />
-                    <Image style={styles.postImage} source={imageUrl} />
+                    <Image style={styles.postImage} source={{ uri: imageUrl }} />
                 </View> :
                 isPostPage ? <View style={{ ...styles.postImageContainer, height: 20 }}>
                     <View style={styles.whiteShape} />
                 </View> : <></>
             }
-            {isPostPage ? <PostPage data={data} distance={distance} coordinates={coordinates} /> :
-                <LocationBar address={address} distance={distance} />
+            {isPostPage ? <PostPage data={data.item} distance={distance} coordinates={coords} /> :
+                <LocationBar address={addressText} distance={distance} />
             }
         </TouchableOpacity>
     )
@@ -62,8 +50,9 @@ const MainPagePosts = ({ data, onPress, isPostPage }) => {
 const styles = StyleSheet.create({
     postCard: {
         alignItems: 'center',
+        justifyContent: 'center',
+        width: windowWidth,
         paddingTop: 15
-
     },
     postCardTitle: {
         color: 'white',

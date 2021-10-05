@@ -1,7 +1,8 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Dimensions, Image, StyleSheet, Text, View } from 'react-native';
+import { Dimensions, Image, StyleSheet, Text, TouchableOpacity, View, Platform } from 'react-native';
 import CustomInput from '../../components/ui/CustomInput';
 import { UsersContext } from '../../context/UsersContext';
+import * as ImagePicker from 'expo-image-picker';
 
 const windowWidth = Dimensions.get('window').width;
 
@@ -11,6 +12,31 @@ const ChangeName = () => {
 
     const [firstName, setFirstName] = useState(user.user.firstName)
     const [lastName, setLastName] = useState(user.user.lastName)
+    const [image, setImage] = useState(null);
+    const [imageSource, setImageSource] = useState(user.user.avatar)
+
+
+    const pickImage = async () => {
+        const getPermissions = await (async () => {
+            if (Platform.OS !== 'web') {
+                const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+                if (status !== 'granted') {
+                    alert('Sorry, we need camera roll permissions to make this work!');
+                }
+            }
+        })();
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.All,
+            allowsEditing: true,
+            aspect: [1, 1],
+            quality: 1,
+        });
+
+        if (!result.cancelled) {
+            setImage(result.uri);
+            setImageSource(result.uri)
+        }
+    };
 
     useEffect(() => {
         dipatchUserChanges({ type: "CHANGE_FIRST_NAME", firstName })
@@ -20,12 +46,6 @@ const ChangeName = () => {
         dipatchUserChanges({ type: "CHANGE_LAST_NAME", lastName })
     }, [lastName])
 
-    useEffect(() => {
-        return () => {
-            dipatchUserChanges({ type: "RESET" })
-        }
-    }, [])
-
     return (
         <View style={styles.container}>
             <View>
@@ -33,9 +53,15 @@ const ChangeName = () => {
                     אנא מלאו את הפרטים הבאים כדי ליצור קשר עם המעסיק
                 </Text>
                 <View style={styles.imgSectionContainer}>
-                    <View style={styles.imgContainer}>
-                        <Image source={require("../../icons/btn_picture_normal.png")} style={styles.img} />
-                    </View>
+                    <TouchableOpacity activeOpacity={1} onPress={pickImage}>
+                        <View style={styles.imgContainer} >
+                            {!image && !imageSource ?
+                                <Image source={require("../../icons/btn_picture_normal.png")} style={styles.img} /> :
+                                image ? <Image source={{ uri: image }} style={styles.img} /> :
+                                    <Image source={{ uri: imageSource }} style={styles.img} />
+                            }
+                        </View>
+                    </TouchableOpacity>
                     <Text style={{ textAlign: 'center' }}>
                         הסלפי שלי
                     </Text>
@@ -68,12 +94,13 @@ const styles = StyleSheet.create({
     },
     imgContainer: {
         width: 120,
-        height: 120
+        height: 120,
     },
     img: {
         width: '100%',
         height: '100%',
-        resizeMode: 'stretch'
+        resizeMode: 'stretch',
+        borderRadius: 500
     },
     inputSectionContainer: {
         flexDirection: 'row-reverse',

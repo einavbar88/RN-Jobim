@@ -61,12 +61,10 @@ const NewJobTabNav = ({ state, descriptors, navigation, position }) => {
                             img = require("../../icons/icon_signup_city.png")
                         break
                     case "attachment":
+                        img = require("../../icons/icon_newjob_extra.png")
                         if (newPostDetails.attachment === '') {
-                            img = require("../../icons/icon_newjob_extra.png")
                             isEmpty = true
                         } else isEmpty = false
-                        if (isFocused)
-                            img = require("../../icons/icon_newjob_extra.png")
                         break
                     default:
                         break

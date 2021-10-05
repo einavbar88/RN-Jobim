@@ -12,10 +12,13 @@ const JobLocation = ({ navigation }) => {
     const [modalOpen, setModalOpen] = useState(false)
     const [locationText, setLocationText] = useState('')
     const [buildingNum, setBuildingNum] = useState('')
+    const addressText = { city: '', street: '', number: '' }
 
     const onPressLocation = (address) => {
         setModalOpen(true)
-        setLocationText(address)
+        setLocationText(`${address[0]} ${address[1]}`)
+        addressText.city = address[0]
+        addressText.street = address[1]
     }
 
     const onPressBuildingNumber = () => {
@@ -23,7 +26,8 @@ const JobLocation = ({ navigation }) => {
             setModalOpen(false)
             const address = `${locationText} ${buildingNum}`
             setLocationText(address)
-            dispatchNewPostDetails({ type: "JOB_LOCATION", location: address, locationValid: true })
+            addressText.number = buildingNum
+            dispatchNewPostDetails({ type: "JOB_LOCATION", location: address, locationValid: true, locationArr: options[0].concat(buildingNum), addresText: addressText })
             setBuildingNum('')
         }
     }
@@ -34,7 +38,7 @@ const JobLocation = ({ navigation }) => {
 
         if (locationText.length > 2) {
             searchAutoComplete(locationText)
-                .then((res) => setOptions(res.map(a => `${a[0]} ${a[1]}`)))
+                .then((res) => setOptions(res))
         }
         else if (options !== [])
             setOptions([])
@@ -79,7 +83,7 @@ const JobLocation = ({ navigation }) => {
 
             <View style={{ alignItems: 'flex-end', width: '80%' }}>
                 {options.length > 0 && options.map((address) => <TouchableOpacity activeOpacity={1} key={address} onPress={() => onPressLocation(address)}>
-                    <Text style={{ color: colors.orange }}>{address}</Text>
+                    <Text style={{ color: colors.orange }}>{address[0]} {address[1]}</Text>
                 </TouchableOpacity>)}
             </View>
         </View>

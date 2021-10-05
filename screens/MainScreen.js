@@ -1,11 +1,14 @@
-import React from 'react'
-import { Image, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import axios from 'axios';
+import React, { useContext, useEffect } from 'react'
+import { Dimensions, FlatList, Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import FiltersBtn from '../components/posts/filters/FiltersBtn';
 import PostModal from '../components/posts/PostModal';
 
 import HeaderButton from '../components/ui/HeaderButton';
-import mockData from '../mock-data/mockData'
+import { PostsContext } from '../context/PostsContext';
+import { serverUrl } from '../env/env';
+
 
 export const menuBtn = (navigation) => (
     <TouchableOpacity activeOpacity={1} style={{ height: 23, width: 30, marginLeft: 10 }} onPress={() => navigation.toggleDrawer()}>
@@ -22,22 +25,44 @@ export const mainScreenOptions = (navigation) => ({
     )
 })
 
+
+const windowWidth = Dimensions.get('window').width;
+
 const MainScreen = (props) => {
+
+    const { jobsList, setJobsList, location } = useContext(PostsContext)
+
+    const getJobs = async () => {
+        const jobs = await axios.get(`${serverUrl}jobs`)
+        setJobsList(jobs.data)
+    }
+
+    useEffect(() => {
+        if (jobsList.length === 0)
+            getJobs()
+    }, [])
 
     const applyFilters = () => {
 
     }
 
     return (
-        <ScrollView style={styles.main}>
+        <View style={styles.main}>
             <FiltersBtn applyFilters={applyFilters} />
-            <PostModal data={mockData[0]} />
-        </ScrollView>
+            <FlatList
+                data={jobsList}
+                keyExtractor={job => job._id}
+                renderItem={(job) => <PostModal data={job} />}
+            />
+        </View>
     );
 }
 
 const styles = StyleSheet.create({
     main: {
+        flex: 1,
+        // alignItems: 'center',
+        width: windowWidth
     },
     img: {
         width: '100%',

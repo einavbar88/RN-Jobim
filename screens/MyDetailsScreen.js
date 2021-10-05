@@ -10,6 +10,7 @@ import { serverUrl } from '../env/env';
 import ChangeCity from './change-details/ChangeCity';
 import ChangeYear from './change-details/ChangeYear';
 import ChangeEmail from './change-details/ChangeEmail';
+import { uploadImage } from '../auxFunc';
 
 export const myDetailsScreenOptions = (navigation, route, context) => {
 

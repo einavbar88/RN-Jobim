@@ -96,7 +96,7 @@ const AppNavigator = ({ navigation }) => {
                             component={NewJobPostScreen}
                             options={({ navigation, route }) => ({
                                 title: "פרסם ג'וב חדש",
-                                ...newJobPostScreenOptions(navigation, route, { newPostDetails, dispatchNewPostDetails })
+                                ...newJobPostScreenOptions(navigation, route, { newPostDetails, dispatchNewPostDetails, storageToken })
                             })} />
 
                     </Drawer.Navigator>

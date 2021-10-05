@@ -3,6 +3,7 @@ import { Dimensions, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { jobsArray } from '../../components/posts/filters/JobFilter';
 import JobFilterListItem from '../../components/posts/filters/JobFilterListItem';
 import { PostsContext } from '../../context/PostsContext';
+import jobs from '../../data/jobs';
 import colors from '../../styles/colors';
 
 const windowWidth = Dimensions.get('window').width;
@@ -11,8 +12,15 @@ const JobTitle = ({ navigation }) => {
 
     const { newPostDetails, dispatchNewPostDetails } = useContext(PostsContext)
 
+    const parseJob = (jobName) => {
+        for (let [key, value] of Object.entries(object1))
+            if (value.name === jobName)
+                return key
+    }
+
     const onPressJob = (jobName) => {
-        dispatchNewPostDetails({ type: "JOB_NAME", job: jobName })
+        const job = parseJob(jobName)
+        dispatchNewPostDetails({ type: "JOB_NAME", job })
         navigation.navigate('description')
     }
 

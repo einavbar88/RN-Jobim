@@ -3,6 +3,7 @@ import { menuBtn } from './MainScreen';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import CustomTabNav from '../components/ui/CustomTabNav';
 import FavoritesTabAndEnquiries from '../components/FavoritesTabAndEnquiries';
+import { Dimensions } from 'react-native';
 
 export const myJobsScreenOptions = (navigation) => ({
     headerLeft: () => (menuBtn(navigation))
@@ -10,7 +11,7 @@ export const myJobsScreenOptions = (navigation) => ({
 
 const Tab = createMaterialTopTabNavigator();
 
-const fav = [], enq = []
+const windowWidth = Dimensions.get('window').width;
 
 const MyJobsScreen = () => {
     return (

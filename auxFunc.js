@@ -1,6 +1,6 @@
 import axios from "axios";
 import * as Location from 'expo-location';
-import { geocodeAPIUrl, googleAPIKey } from "./env/env";
+import { geocodeAPIUrl, googleAPIKey, serverUrl } from "./env/env";
 
 const addressesAPIurl = "https://data.gov.il/api/3/action/datastore_search";
 
@@ -60,14 +60,55 @@ export const getCurrentLocation = async (setLocation) => {
     return setLocation(location);
 }
 
-export const getCoordinates = async (address, setCoordinates) => {
+export const getCoordinates = async (address, setCoordinates, post) => {
     const { city, street, number } = address
-    axios.get(`${geocodeAPIUrl}address=${street} ${number} ${city}&key=${googleAPIKey}`)
-        .then((res) => {
-            if (res.data.results[0]) {
-                const { lng, lat } = res.data.results[0].geometry.location
-                setCoordinates([lat, lng])
-            }
+    try {
+        const res = await axios.get(`${geocodeAPIUrl}address=${street} ${number} ${city}&key=${googleAPIKey}`)
+        if (res.data.results[0]) {
+            const { lng, lat } = res.data.results[0].geometry.location
+            if (post)
+                return [lat, lng]
+            setCoordinates([lat, lng])
+        }
+    } catch (e) {
+        console.log(e)
+    }
+
+}
+
+export const uploadImage = async (imgSrc) => {
+    const formData = new FormData()
+    formData.append('image', {
+        uri: imgSrc,
+        name: 'image.jpeg',
+    });
+    console.log(formData._parts[0])
+    try {
+        const test = await fetch(`${serverUrl}image-upload`, {
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'multipart/form-data'
+            },
+            method: 'POST',
+            body: formData
         })
-        .catch((e) => console.log(e))
+        console.log(test)
+    } catch (e) {
+        console.log(e)
+    }
+
+}
+export const saveNewPost = async (newPostDetails, storageToken) => {
+
+    const { locationArr } = newPostDetails
+
+    const coords = await getCoordinates({ city: locationArr[0], street: locationArr[1], number: locationArr[2] }, () => { }, true)
+
+    const newPost = await axios.post(`${serverUrl}jobs`, { ...newPostDetails, coords }, {
+        headers: {
+            "Authorization": `Bearer ${storageToken}`
+        }
+    })
+    return newPost
+
 }
