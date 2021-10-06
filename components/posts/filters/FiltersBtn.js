@@ -1,13 +1,26 @@
-import React, { useState } from "react"
+import React, { useContext, useState } from "react"
 import { Image, Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { PostsContext } from "../../../context/PostsContext";
 import colors from '../../../styles/colors';
 import FiltersModal from "./FiltersModal";
 
 
-const FiltersBtn = ({ applyFilters }) => {
+const FiltersBtn = () => {
+
+    const { dispatchFilters } = useContext(PostsContext)
 
     const [modalVisible, setModalVisible] = useState(false);
 
+    const close = () => setModalVisible(false)
+
+    const cancel = () => {
+        dispatchFilters({ type: "RESET" })
+        close()
+    }
+
+    const applyFilters = () => {
+        close()
+    }
 
     return (
         <>
@@ -25,11 +38,9 @@ const FiltersBtn = ({ applyFilters }) => {
                 transparent={false}
                 visible={modalVisible}
                 style={{ backgroundColor: 'black' }}
-                onRequestClose={() => {
-                    setModalVisible(!modalVisible);
-                }}
+                onRequestClose={cancel}
             >
-                <FiltersModal close={() => setModalVisible(false)} />
+                <FiltersModal close={cancel} confirm={applyFilters} />
             </Modal>
         </>
     )

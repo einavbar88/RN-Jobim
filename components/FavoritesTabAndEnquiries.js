@@ -20,7 +20,6 @@ const FavoritesTabAndEnquiries = ({ route }) => {
 
     const getFavorites = async () => {
         const favorites = await axios.get(`${serverUrl}jobs/favorites`, { params: { favoritesList: user.user.favorites } })
-        console.log(user.user.favorites)
         setFavorites(favorites.data)
     }
 
@@ -31,7 +30,7 @@ const FavoritesTabAndEnquiries = ({ route }) => {
     return (
         <View style={styles.container}>
             {
-                favorites.length > 0 ?
+                favorites.length > 0 && route.name === 'מועדפים' ?
                     <FlatList
                         data={favorites}
                         keyExtractor={job => job._id}
@@ -54,6 +53,7 @@ const styles = StyleSheet.create({
     container: {
         justifyContent: 'center',
         alignItems: 'center',
+        flex: 1
     },
     emptyText: {
         color: colors.orange,

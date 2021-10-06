@@ -25,7 +25,9 @@ const MainPagePosts = ({ data, onPress, isPostPage }) => {
 
 
     return (
-        <TouchableOpacity activeOpacity={1} style={{ ...styles.postCard, backgroundColor: jobs[role].color, margin: isPostPage ? 0 : 5 }} disabled={isPostPage} onPress={onPress}>
+        <TouchableOpacity activeOpacity={1} style={{
+            ...styles.postCard, backgroundColor: jobs[role].color, width: isPostPage ? windowWidth : windowWidth - 10
+        }} disabled={isPostPage} onPress={onPress}>
             <Text style={styles.postCardTitle} >{`${company + (branch ? " " + branch : "")} מחפשת ${jobs[role].name}`}</Text>
             <View style={styles.iconContainer}>
                 <Image source={jobs[role].icon} style={styles.icon} />
@@ -51,7 +53,6 @@ const styles = StyleSheet.create({
     postCard: {
         alignItems: 'center',
         justifyContent: 'center',
-        width: windowWidth,
         paddingTop: 15
     },
     postCardTitle: {
@@ -79,7 +80,7 @@ const styles = StyleSheet.create({
     },
     postImageContainer: {
         width: '100%',
-        height: 200,
+        height: 270,
         overflow: 'hidden'
     },
     shape: {

@@ -6,7 +6,7 @@ import CustomTabNav from '../../ui/CustomTabNav';
 import JobFilter from './JobFilter';
 import LocationFilter from './LocationFilter';
 
-const FiltersModal = ({ close }) => {
+const FiltersModal = ({ close, confirm }) => {
 
     const Tab = createMaterialTopTabNavigator();
 
@@ -14,7 +14,7 @@ const FiltersModal = ({ close }) => {
         <>
             <View style={styles.modalHeader}>
                 <View style={styles.modalHeaderTop}>
-                    <TouchableOpacity activeOpacity={1}>
+                    <TouchableOpacity activeOpacity={1} onPress={confirm}>
                         <Text style={styles.headerBtn}>אשר</Text>
                     </TouchableOpacity>
                     <Text style={styles.headerTitle}>הצג לפי</Text>

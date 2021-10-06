@@ -1,5 +1,6 @@
 import axios from "axios";
 import * as Location from 'expo-location';
+import jobs from "./data/jobs";
 import { geocodeAPIUrl, googleAPIKey, serverUrl } from "./env/env";
 
 const addressesAPIurl = "https://data.gov.il/api/3/action/datastore_search";
@@ -27,7 +28,11 @@ export const searchAutoComplete = async (value) => {
 
 export default searchAutoComplete
 
-
+export const parseJob = (jobName) => {
+    for (let [key, value] of Object.entries(jobs))
+        if (value.name === jobName)
+            return key
+}
 
 const deg2rad = (deg) => {
     return deg * (Math.PI / 180)

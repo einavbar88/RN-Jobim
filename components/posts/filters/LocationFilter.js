@@ -1,11 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Dimensions, StyleSheet, View } from 'react-native';
 
 import MapView, { Marker } from 'react-native-maps';
 import { getCurrentLocation } from '../../../auxFunc';
+import { PostsContext } from '../../../context/PostsContext';
 
 const LocationFilter = () => {
 
+    const { dispatchFilters } = useContext(PostsContext)
     const [location, setLocation] = useState(null);
 
     useEffect(() => {
@@ -14,6 +16,10 @@ const LocationFilter = () => {
             setLocation(null)
         }
     }, []);
+
+    useEffect(() => {
+        dispatchFilters({ type: "LOCATION", locationArea: location })
+    }, [location])
 
     return (
         location &&

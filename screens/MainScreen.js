@@ -61,8 +61,6 @@ const MainScreen = (props) => {
 const styles = StyleSheet.create({
     main: {
         flex: 1,
-        // alignItems: 'center',
-        width: windowWidth
     },
     img: {
         width: '100%',

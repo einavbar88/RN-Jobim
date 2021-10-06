@@ -1,5 +1,6 @@
 import React, { useEffect, useReducer, useState } from 'react';
 import { getCurrentLocation } from '../auxFunc';
+import FiltersReducer, { filtersInitialState } from '../reducers/FiltersReducer';
 import NewPostReducer, { initialState } from '../reducers/NewPostReducer';
 
 
@@ -15,9 +16,12 @@ const PostsProvider = (props) => {
         location: { ...initialState.location }
     })
 
+    const [filters, dispatchFilters] = useReducer(FiltersReducer, filtersInitialState)
+
     const [phoneLocation, setPhoneLocation] = useState(null);
     const [location, setLocation] = useState({})
     const [jobsList, setJobsList] = useState([])
+
 
 
     useEffect(() => {
@@ -36,7 +40,7 @@ const PostsProvider = (props) => {
             value={{
                 newPostDetails, dispatchNewPostDetails,
                 location, jobsList, setJobsList,
-
+                filters, dispatchFilters
             }}
         >
             {props.children}

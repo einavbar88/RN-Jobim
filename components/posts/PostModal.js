@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { Image, Modal, ScrollView, View, StyleSheet, TouchableOpacity, Dimensions } from "react-native";
 import MainPagePosts from "./MainPagePosts";
 
+const windowWidth = Dimensions.get('window').width;
+
 const PostModal = ({ data }) => {
 
     const [modalVisible, setModalVisible] = useState(false);
@@ -12,38 +14,43 @@ const PostModal = ({ data }) => {
         }
     }, [])
 
-    return (<>
-        {modalVisible && <Modal
-            animationType="slide"
-            transparent={false}
-            visible={modalVisible}
+    return (
+        <View style={styles.screen}>
+            {modalVisible && <Modal
+                animationType="slide"
+                transparent={false}
+                visible={modalVisible}
+                onRequestClose={() => {
+                    setModalVisible(!modalVisible);
+                }}
+            >
+                <View style={styles.header}>
+                    <TouchableOpacity activeOpacity={1} style={styles.btnContainer} onPress={() => setModalVisible(!modalVisible)}>
+                        <Image source={require("../../icons/btn_close_popup.png")} style={styles.btnImg} />
+                    </TouchableOpacity>
+                    <TouchableOpacity activeOpacity={1} style={{ ...styles.btnContainer, width: 5, height: 20 }}>
+                        <Image source={require("../../icons/btn_more_normal.png")} style={styles.btnImg} />
+                    </TouchableOpacity>
+                </View>
+                <ScrollView>
+                    <MainPagePosts data={data} isPostPage={true} />
+                </ScrollView>
+            </Modal>
+            }
+            <MainPagePosts data={data} onPress={() => setModalVisible(true)} />
 
-            onRequestClose={() => {
-                setModalVisible(!modalVisible);
-            }}
-        >
-            <View style={styles.header}>
-                <TouchableOpacity activeOpacity={1} style={styles.btnContainer} onPress={() => setModalVisible(!modalVisible)}>
-                    <Image source={require("../../icons/btn_close_popup.png")} style={styles.btnImg} />
-                </TouchableOpacity>
-                <TouchableOpacity activeOpacity={1} style={{ ...styles.btnContainer, width: 5, height: 20 }}>
-                    <Image source={require("../../icons/btn_more_normal.png")} style={styles.btnImg} />
-                </TouchableOpacity>
-            </View>
-            <ScrollView>
-                <MainPagePosts data={data} isPostPage={true} />
-            </ScrollView>
-        </Modal>}
-
-        <MainPagePosts data={data} onPress={() => setModalVisible(true)} />
-
-    </>
+        </View>
     )
 
 }
 
 const styles = StyleSheet.create({
+    screen: {
+        flex: 1,
+        margin: 5,
+        alignItems: 'center',
 
+    },
     header: {
         width: '90%',
         flexDirection: 'row',
