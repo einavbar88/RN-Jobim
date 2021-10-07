@@ -1,13 +1,15 @@
 import axios from 'axios';
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Alert, StyleSheet, Text, View } from 'react-native';
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import CustomInput from '../../components/ui/CustomInput';
+import { PostsContext } from '../../context/PostsContext';
 import { serverUrl } from '../../env/env';
 import colors from '../../styles/colors';
 
 const SignUpScreen = ({ onSubmit, isSignUp, setIsSignUp }) => {
 
+    const { setLoading } = useContext(PostsContext)
 
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
@@ -19,6 +21,7 @@ const SignUpScreen = ({ onSubmit, isSignUp, setIsSignUp }) => {
 
     const onSubmitSignup = async () => {
         const city = " "
+        setLoading(true)
         if (email && password && firstName && lastName && phoneNumber && birthYear) {
             const form = {
                 email,
@@ -32,8 +35,10 @@ const SignUpScreen = ({ onSubmit, isSignUp, setIsSignUp }) => {
             try {
                 const user = (await axios.post(`${serverUrl}users`, { ...form })).data
                 onSubmit(user, user.token)
+                setLoading(false)
             } catch (e) {
                 Alert.alert("שגיאה!", "נא למלא את כל השדות נכונה", [{ text: "OK" }])
+                setLoading(false)
             }
 
         } else {

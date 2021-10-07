@@ -30,7 +30,7 @@ const ChangeCity = () => {
     useEffect(() => {
         if (!citiesArray.find((c) => c === city)) {
             dipatchUserChanges({ type: "CHANGE_CITY", city: '' })
-            setSuggested(citiesArray.filter((c) => c.includes(city)).slice(0, 5))
+            setSuggested(citiesArray.filter((c) => c.includes(city.trim())).slice(0, 5))
         }
     }, [city])
 
@@ -44,11 +44,15 @@ const ChangeCity = () => {
                     onChangeText={setCity}
                     style={styles.input}
                 >
-                    <TouchableOpacity activeOpacity={1} style={styles.deleteBtn} onPress={() => setCity('')}>
-                        <Text style={styles.deleteBtnText}>
-                            X
-                        </Text>
-                    </TouchableOpacity>
+                    {
+                        city.trim() !== '' &&
+                        <TouchableOpacity activeOpacity={1} style={styles.deleteBtn} onPress={() => setCity('')}>
+                            <Text style={styles.deleteBtnText}>
+                                X
+                            </Text>
+                        </TouchableOpacity>
+                    }
+
                 </CustomInput>
                 <View>
                     {city.length > 2 && suggested !== [] && suggested.map((address) => (
@@ -82,7 +86,7 @@ const styles = StyleSheet.create({
     },
     deleteBtn: {
         position: 'absolute',
-        right: 20,
+        left: 20,
         top: 17,
         backgroundColor: colors.orange,
         borderRadius: 30

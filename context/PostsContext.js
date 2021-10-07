@@ -8,20 +8,18 @@ export const PostsContext = React.createContext()
 
 const PostsProvider = (props) => {
 
-    // const [,] = useState(null)
     const [newPostDetails, dispatchNewPostDetails] = useReducer(NewPostReducer, {
         ...initialState,
         name: { ...initialState.name },
         description: { ...initialState.description },
         location: { ...initialState.location }
     })
-
     const [filters, dispatchFilters] = useReducer(FiltersReducer, filtersInitialState)
-
+    const [currentFilters, setCurrentFilters] = useState(filtersInitialState)
     const [phoneLocation, setPhoneLocation] = useState(null);
     const [location, setLocation] = useState({})
     const [jobsList, setJobsList] = useState([])
-
+    const [loading, setLoading] = useState(false)
 
 
     useEffect(() => {
@@ -39,8 +37,11 @@ const PostsProvider = (props) => {
         <PostsContext.Provider
             value={{
                 newPostDetails, dispatchNewPostDetails,
-                location, jobsList, setJobsList,
-                filters, dispatchFilters
+                location, setLocation,
+                jobsList, setJobsList,
+                filters, dispatchFilters,
+                currentFilters, setCurrentFilters,
+                loading, setLoading
             }}
         >
             {props.children}

@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { StyleSheet, View, Text, Image, Dimensions } from 'react-native';
+import React from "react";
+import { StyleSheet, View, Text, Image } from 'react-native';
 
 const LocationBar = ({ isPostPage, address, distance }) => {
 
@@ -21,7 +21,7 @@ const LocationBar = ({ isPostPage, address, distance }) => {
                 </View>
                 <Text style={{ ...styles.locationText, color: isPostPage ? 'black' : 'white' }}>{`${address?.street + " " + address?.number}, ${address?.city}`}</Text>
             </View>
-            <Text style={{ ...styles.locationText, fontWeight: '700', color: isPostPage ? 'black' : 'white' }}>{distance} ק"מ ממני </Text>
+            <Text style={{ ...styles.locationText, fontWeight: '700', color: isPostPage ? 'black' : 'white' }}>{parseFloat((Number)(distance).toFixed(3))} ק"מ ממני </Text>
         </View>
     )
 }

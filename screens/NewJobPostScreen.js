@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from 'react'
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import NewJobTabNav from '../components/ui/NewJobTabNav';
 import CompanyDetails from './new-job/CompanyDetails';
@@ -14,7 +14,7 @@ import { saveNewPost } from '../auxFunc';
 export const newJobPostScreenOptions = (navigation, route, props) => ({
     headerRight: () => {
         const routeName = getFocusedRouteNameFromRoute(route) ?? 'name';
-        const { newPostDetails, storageToken } = props
+        const { newPostDetails, storageToken, setLoading } = props
 
         const onPressNext = async () => {
             switch (routeName) {
@@ -35,16 +35,21 @@ export const newJobPostScreenOptions = (navigation, route, props) => ({
                         navigation.navigate("attachment")
                     break
                 case "attachment":
+                    setLoading(true)
                     saveNewPost(newPostDetails, storageToken)
-                        .then(res => navigation.navigate('MainScreen'))
+                        .then(res => {
+                            setLoading(false)
+                            Alert.alert('המודעה הועלתה בהצלחה!', 'תודה שפירסמתם אצלנו! בהצלחה', [{ text: "OK" }])
+                            navigation.navigate('MainScreen')
+                        })
                     break
             }
         }
 
         return (
-            <TouchableOpacity activeOpacity={1} style={{ marginRight: 10 }} onPress={onPressNext}>
+            <TouchableOpacity activeOpacity={1} style={{ marginRight: 10 }} onPress={onPressNext} >
                 <Text style={{ color: 'white', fontSize: 16 }}>{routeName === 'attachment' ? "שמור" : "הבא"}</Text>
-            </TouchableOpacity>
+            </TouchableOpacity >
         )
     },
     headerLeft: () => {

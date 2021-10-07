@@ -9,11 +9,15 @@ const DetailsMain = ({ navigation, route }) => {
 
     const { user } = useContext(UsersContext)
 
+    let image = require("../../icons/btn_picture_normal.png")
+    if (user.user.avatar !== '')
+        image = { uri: user.user.avatar }
+
     return (
         <View style={styles.screen}>
             <TouchableOpacity activeOpacity={1} onPress={() => navigation.navigate('name')}>
                 <View style={styles.avatar}>
-                    <Image style={{ width: 100, height: 100 }} source={require("../../icons/btn_picture_normal.png")} />
+                    <Image style={{ width: 100, height: 100, borderRadius: 100 }} source={image} />
                 </View>
             </TouchableOpacity>
             <InfoRow img={require("../../icons/icon_signup_name.png")} text={`${user?.user?.firstName} ${user?.user?.lastName}`} row="name" navigation={navigation} />
@@ -39,7 +43,7 @@ const styles = StyleSheet.create({
     avatar: {
         justifyContent: 'center',
         alignItems: 'center',
-        marginVertical: 10
+        marginVertical: 10,
     },
 
 })

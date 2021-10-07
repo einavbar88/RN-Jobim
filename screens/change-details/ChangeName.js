@@ -3,6 +3,8 @@ import { Dimensions, Image, StyleSheet, Text, TouchableOpacity, View, Platform }
 import CustomInput from '../../components/ui/CustomInput';
 import { UsersContext } from '../../context/UsersContext';
 import * as ImagePicker from 'expo-image-picker';
+import * as ImageManipulator from 'expo-image-manipulator';
+import { pickImage } from '../../auxFunc';
 
 const windowWidth = Dimensions.get('window').width;
 
@@ -13,29 +15,13 @@ const ChangeName = () => {
     const [firstName, setFirstName] = useState(user.user.firstName)
     const [lastName, setLastName] = useState(user.user.lastName)
     const [image, setImage] = useState(null);
-    const [imageSource, setImageSource] = useState(user.user.avatar)
+    const [img64Source, setImg64Source] = useState(user.user.avatar)
 
 
-    const pickImage = async () => {
-        const getPermissions = await (async () => {
-            if (Platform.OS !== 'web') {
-                const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-                if (status !== 'granted') {
-                    alert('Sorry, we need camera roll permissions to make this work!');
-                }
-            }
-        })();
-        let result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.All,
-            allowsEditing: true,
-            aspect: [1, 1],
-            quality: 1,
-        });
-
-        if (!result.cancelled) {
-            setImage(result.uri);
-            setImageSource(result.uri)
-        }
+    const chooseImage = async () => {
+        const { uri, img64 } = await pickImage()
+        setImage(uri)
+        setImg64Source(img64)
     };
 
     useEffect(() => {
@@ -46,6 +32,10 @@ const ChangeName = () => {
         dipatchUserChanges({ type: "CHANGE_LAST_NAME", lastName })
     }, [lastName])
 
+    useEffect(() => {
+        dipatchUserChanges({ type: "AVATAR", avatar: img64Source })
+    }, [img64Source])
+
     return (
         <View style={styles.container}>
             <View>
@@ -53,12 +43,12 @@ const ChangeName = () => {
                     אנא מלאו את הפרטים הבאים כדי ליצור קשר עם המעסיק
                 </Text>
                 <View style={styles.imgSectionContainer}>
-                    <TouchableOpacity activeOpacity={1} onPress={pickImage}>
+                    <TouchableOpacity activeOpacity={1} onPress={chooseImage}>
                         <View style={styles.imgContainer} >
-                            {!image && !imageSource ?
+                            {!image && !img64Source ?
                                 <Image source={require("../../icons/btn_picture_normal.png")} style={styles.img} /> :
-                                image ? <Image source={{ uri: image }} style={styles.img} /> :
-                                    <Image source={{ uri: imageSource }} style={styles.img} />
+                                image ? <Image source={{ uri: image }} style={{ ...styles.img, borderRadius: 500 }} /> :
+                                    <Image source={{ uri: img64Source }} style={{ ...styles.img, borderRadius: 500 }} />
                             }
                         </View>
                     </TouchableOpacity>
@@ -100,7 +90,6 @@ const styles = StyleSheet.create({
         width: '100%',
         height: '100%',
         resizeMode: 'stretch',
-        borderRadius: 500
     },
     inputSectionContainer: {
         flexDirection: 'row-reverse',

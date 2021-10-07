@@ -5,20 +5,22 @@ import colors from '../../../styles/colors';
 import FiltersModal from "./FiltersModal";
 
 
-const FiltersBtn = () => {
+const FiltersBtn = ({ applyFilters }) => {
 
-    const { dispatchFilters } = useContext(PostsContext)
+    const { currentFilters, dispatchFilters } = useContext(PostsContext)
 
     const [modalVisible, setModalVisible] = useState(false);
 
     const close = () => setModalVisible(false)
 
     const cancel = () => {
-        dispatchFilters({ type: "RESET" })
+        dispatchFilters({ type: "CANCEL", currentFilters })
         close()
     }
 
-    const applyFilters = () => {
+
+    const confirm = () => {
+        applyFilters()
         close()
     }
 
@@ -40,7 +42,7 @@ const FiltersBtn = () => {
                 style={{ backgroundColor: 'black' }}
                 onRequestClose={cancel}
             >
-                <FiltersModal close={cancel} confirm={applyFilters} />
+                <FiltersModal close={cancel} confirm={confirm} />
             </Modal>
         </>
     )

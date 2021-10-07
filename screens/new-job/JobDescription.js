@@ -1,7 +1,8 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext } from 'react';
 import { Dimensions, Image, StyleSheet, Text, View } from 'react-native';
 import CustomInput from '../../components/ui/CustomInput';
 import { PostsContext } from '../../context/PostsContext';
+import jobs from '../../data/jobs';
 import colors from '../../styles/colors';
 
 const windowWidth = Dimensions.get('window').width;
@@ -23,7 +24,7 @@ const JobDescription = () => {
                 <View style={styles.topText}>
                     <Text> {`${newPostDetails.name.name} `}</Text>
                     <Text>מחפשת</Text>
-                    <Text> {`${newPostDetails.job} `}</Text>
+                    <Text> {`${jobs[newPostDetails.job]?.name} `}</Text>
                 </View>
                 <View style={styles.inputSectionContainer}>
                     <CustomInput value={newPostDetails.description.title} onChangeText={onChangeTitle} placeholder="כותרת קולעת (עד 50 תווים)" style={styles.input} />

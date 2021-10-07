@@ -7,11 +7,19 @@ import { PostsContext } from '../../../context/PostsContext';
 
 const LocationFilter = () => {
 
-    const { dispatchFilters } = useContext(PostsContext)
+    const { currentFilters, dispatchFilters } = useContext(PostsContext)
     const [location, setLocation] = useState(null);
 
     useEffect(() => {
-        getCurrentLocation(setLocation);
+        if (currentFilters.locationArea.lat)
+            setLocation({
+                coords: {
+                    latitude: currentFilters.locationArea.lat,
+                    longitude: currentFilters.locationArea.lng,
+                }
+            })
+        else
+            getCurrentLocation(setLocation);
         return () => {
             setLocation(null)
         }

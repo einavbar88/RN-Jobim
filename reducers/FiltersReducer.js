@@ -26,7 +26,15 @@ const FiltersReducer = (state, action) => {
             jobsTypes.push(job)
             return { ...current, jobsTypes }
         case 'LOCATION':
-            return { ...current, locationArea: action.locationArea }
+            if (!action.locationArea) return current
+            const { latitude, longitude } = action.locationArea.coords
+            const locationArea = {
+                lat: latitude,
+                lng: longitude
+            }
+            return { ...current, locationArea }
+        case 'CANCEL':
+            return action.currentFilters
         case 'RESET':
             return filtersInitialState
         default:

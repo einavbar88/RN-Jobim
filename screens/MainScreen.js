@@ -1,7 +1,8 @@
 import axios from 'axios';
 import React, { useContext, useEffect } from 'react'
-import { Dimensions, FlatList, Image, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { FlatList, Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
+import { getDistanceFromLatLonInKm } from '../auxFunc';
 import FiltersBtn from '../components/posts/filters/FiltersBtn';
 import PostModal from '../components/posts/PostModal';
 
@@ -25,26 +26,41 @@ export const mainScreenOptions = (navigation) => ({
     )
 })
 
-
-const windowWidth = Dimensions.get('window').width;
-
 const MainScreen = (props) => {
 
-    const { jobsList, setJobsList, location } = useContext(PostsContext)
+    const { jobsList, setJobsList, location, setLocation, filters, setCurrentFilters, setLoading } = useContext(PostsContext)
 
-    const getJobs = async () => {
-        const jobs = await axios.get(`${serverUrl}jobs`)
-        setJobsList(jobs.data)
+    const isCloseEnough = (p1, p2) => {
+        const distance = getDistanceFromLatLonInKm(p1.lat, p1.lng, p2.lat, p2.lng)
+        return distance <= 3
+    }
+
+    const getJobs = async (around, roles) => {
+        setLoading(true)
+        const jobsLocations = (await axios.get(`${serverUrl}jobs/locations`)).data
+        const filtered = jobsLocations.filter((j) => isCloseEnough(j.coords, around))
+        const jobs = (await axios.get(`${serverUrl}jobs/near-me`, {
+            params: {
+                _id: filtered.map(j => j._id),
+                roles
+            }
+        })).data
+        setLoading(false)
+        setJobsList(jobs.length > 0 ? jobs.sort((a, b) => {
+            const aDistance = getDistanceFromLatLonInKm(a.coords.lat, a.coords.lng, location.lat, location.lng)
+            const bDistance = getDistanceFromLatLonInKm(b.coords.lat, b.coords.lng, location.lat, location.lng)
+            return aDistance > bDistance
+        }) : [])
+    }
+
+    const applyFilters = () => {
+        setCurrentFilters(filters)
+        setLocation(filters.locationArea)
     }
 
     useEffect(() => {
-        if (jobsList.length === 0)
-            getJobs()
-    }, [])
-
-    const applyFilters = () => {
-
-    }
+        getJobs(location, filters.jobsTypes)
+    }, [location])
 
     return (
         <View style={styles.main}>

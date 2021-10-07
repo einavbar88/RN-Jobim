@@ -12,13 +12,12 @@ const JobLocation = ({ navigation }) => {
     const [modalOpen, setModalOpen] = useState(false)
     const [locationText, setLocationText] = useState('')
     const [buildingNum, setBuildingNum] = useState('')
-    const addressText = { city: '', street: '', number: '' }
+    const [addressText, setAddressText] = useState({ city: '', street: '', number: '' })
 
     const onPressLocation = (address) => {
         setModalOpen(true)
         setLocationText(`${address[0]} ${address[1]}`)
-        addressText.city = address[0]
-        addressText.street = address[1]
+        setAddressText({ city: address[0], street: address[1], number: '' })
     }
 
     const onPressBuildingNumber = () => {
@@ -27,7 +26,7 @@ const JobLocation = ({ navigation }) => {
             const address = `${locationText} ${buildingNum}`
             setLocationText(address)
             addressText.number = buildingNum
-            dispatchNewPostDetails({ type: "JOB_LOCATION", location: address, locationValid: true, locationArr: options[0].concat(buildingNum), addresText: addressText })
+            dispatchNewPostDetails({ type: "JOB_LOCATION", location: address, locationValid: true, locationArr: options[0].concat(buildingNum), addressText })
             setBuildingNum('')
         }
     }

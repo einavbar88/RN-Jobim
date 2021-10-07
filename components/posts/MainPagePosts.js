@@ -17,7 +17,7 @@ const MainPagePosts = ({ data, onPress, isPostPage }) => {
     const [distance, setDistance] = useState(null)
 
     useEffect(() => {
-        if (location && !distance) {
+        if (location) {
             const dist = getDistanceFromLatLonInKm(location.lat, location.lng, coords.lat, coords.lng)
             setDistance(dist.toFixed(3))
         }

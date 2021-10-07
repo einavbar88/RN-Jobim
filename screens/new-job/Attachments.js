@@ -2,41 +2,29 @@ import React, { useContext, useEffect, useState } from 'react';
 import { Dimensions, Image, StyleSheet, Text, TouchableOpacity, View, Platform } from 'react-native';
 import { PostsContext } from '../../context/PostsContext';
 import colors from '../../styles/colors';
-import * as ImagePicker from 'expo-image-picker';
+import { pickImage } from '../../auxFunc';
 
 const windowWidth = Dimensions.get('window').width;
 
 const Attachments = () => {
 
-    const { dispatchNewPostDetails } = useContext(PostsContext)
+    const { newPostDetails, dispatchNewPostDetails } = useContext(PostsContext)
     const [isChecked, setIsChecked] = useState(false)
     const [image, setImage] = useState(null);
+    const [img64Source, setImg64Source] = useState(newPostDetails.attachment)
 
 
-    const pickImage = async () => {
-        const getPermissions = await (async () => {
-            if (Platform.OS !== 'web') {
-                const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-                if (status !== 'granted') {
-                    alert('Sorry, we need camera roll permissions to make this work!');
-                }
-            }
-        })();
-        let result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.All,
-            allowsEditing: true,
-            aspect: [4, 3],
-            quality: 1,
-        });
 
-        if (!result.cancelled) {
-            setImage(result.uri);
-        }
+    const chooseImage = async () => {
+        const { uri, img64 } = await pickImage()
+        setImage(uri)
+        setImg64Source(img64)
     };
 
+
     useEffect(() => {
-        dispatchNewPostDetails({ type: "ATTACHMENT", attachment: image })
-    }, [image])
+        dispatchNewPostDetails({ type: "ATTACHMENT", attachment: img64Source })
+    }, [img64Source])
 
     return (
         <View style={styles.container}>
@@ -56,7 +44,7 @@ const Attachments = () => {
                             לא להעלות סתם לוגו...
                         </Text>
                     </View>
-                    <TouchableOpacity style={styles.attachment} activeOpacity={1} onPress={pickImage}>
+                    <TouchableOpacity style={styles.attachment} activeOpacity={1} onPress={chooseImage}>
                         {image ? <Image source={{ uri: image }} style={styles.img} key="user-image" /> :
                             <Image source={require('../../icons/add_pic_normal.png')} style={{ ...styles.img, tintColor: 'black' }} />
                         }

@@ -43,13 +43,12 @@ export default (state = initialState, action) => {
                 current.locationValid = action.locationValid
                 current.addressText = action.addressText
                 current.locationArr = action.locationArr
-
             }
             else
                 current.locationValid = false
             break
         case "ATTACHMENT":
-            current.attachment = current.attachment
+            current.attachment = action.attachment
             break
         case "RESET":
             return initialState

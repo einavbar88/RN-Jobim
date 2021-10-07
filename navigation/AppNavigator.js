@@ -25,6 +25,7 @@ const Drawer = createDrawerNavigator();
 const defaultScreenOptions = () => ({
     headerStyle: {
         backgroundColor: colors.orange,
+        height: 50,
     },
     headerTintColor: 'white',
     title: 'Centered',
@@ -45,7 +46,7 @@ const windowWidth = Dimensions.get('window').width;
 const AppNavigator = ({ navigation }) => {
 
     const { isSignUpOrIn, setUser, user, changeUser, dipatchUserChanges, storageToken, setStorageToken } = useContext(UsersContext)
-    const { newPostDetails, dispatchNewPostDetails } = useContext(PostsContext)
+    const { newPostDetails, dispatchNewPostDetails, setLoading } = useContext(PostsContext)
 
     const [entryTimeout, setEntryTimeout] = useState(true)
 
@@ -70,7 +71,7 @@ const AppNavigator = ({ navigation }) => {
                             component={MyDetailsScreen}
                             options={({ navigation, route }) => ({
                                 title: "הפרטים שלי",
-                                ...myDetailsScreenOptions(navigation, route, { changeUser, dipatchUserChanges, user, setUser, storageToken })
+                                ...myDetailsScreenOptions(navigation, route, { changeUser, dipatchUserChanges, user, setUser, storageToken, setLoading })
                             })} />
                         <Drawer.Screen
                             name="AlertsScreen"
@@ -89,14 +90,14 @@ const AppNavigator = ({ navigation }) => {
                             component={MainScreen}
                             options={({ navigation }) => ({
                                 title: "JOBIM",
-                                ...mainScreenOptions(navigation)
+                                ...mainScreenOptions(navigation, setLoading)
                             })} />
                         <Drawer.Screen
                             name="NewJobPostScreen"
                             component={NewJobPostScreen}
                             options={({ navigation, route }) => ({
                                 title: "פרסם ג'וב חדש",
-                                ...newJobPostScreenOptions(navigation, route, { newPostDetails, dispatchNewPostDetails, storageToken })
+                                ...newJobPostScreenOptions(navigation, route, { newPostDetails, dispatchNewPostDetails, storageToken, setLoading })
                             })} />
 
                     </Drawer.Navigator>

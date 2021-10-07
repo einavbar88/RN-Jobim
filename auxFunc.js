@@ -2,6 +2,9 @@ import axios from "axios";
 import * as Location from 'expo-location';
 import jobs from "./data/jobs";
 import { geocodeAPIUrl, googleAPIKey, serverUrl } from "./env/env";
+import * as ImagePicker from 'expo-image-picker';
+import * as ImageManipulator from 'expo-image-manipulator';
+
 
 const addressesAPIurl = "https://data.gov.il/api/3/action/datastore_search";
 
@@ -81,39 +84,86 @@ export const getCoordinates = async (address, setCoordinates, post) => {
 
 }
 
-export const uploadImage = async (imgSrc) => {
-    const formData = new FormData()
-    formData.append('image', {
-        uri: imgSrc,
-        name: 'image.jpeg',
+export const pickImage = async () => {
+    const getPermissions = await (async () => {
+        if (Platform.OS !== 'web') {
+            const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+            if (status !== 'granted') {
+                alert('Sorry, we need camera roll permissions to make this work!');
+            }
+        }
+    })();
+    let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 1,
     });
-    console.log(formData._parts[0])
-    try {
-        const test = await fetch(`${serverUrl}image-upload`, {
+    if (!result.cancelled) {
+        const img64 = (await ImageManipulator.manipulateAsync(result.uri, [], { base64: true })).base64
+        return { uri: result.uri, img64 }
+    }
+};
+
+export const upload = async (img) => {
+    if (img) {
+        let base64Img = `data:image/jpg;base64,${img}`;
+        let apiUrl =
+            'https://api.cloudinary.com/v1_1/dxgdhmrw7/image/upload';
+        let data = {
+            file: base64Img,
+            upload_preset: 'jobim-app'
+        };
+
+        let ret
+
+        await fetch(apiUrl, {
+            body: JSON.stringify(data),
             headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'multipart/form-data'
+                'content-type': 'application/json'
             },
-            method: 'POST',
-            body: formData
+            method: 'POST'
         })
-        console.log(test)
-    } catch (e) {
-        console.log(e)
+            .then(async response => {
+                let data = await response.json();
+                if (data.secure_url) {
+                    ret = data.url
+                }
+            })
+            .catch(err => {
+                alert('Cannot upload');
+            });
+
+        return ret
     }
 
-}
+};
+
+
 export const saveNewPost = async (newPostDetails, storageToken) => {
 
-    const { locationArr } = newPostDetails
+    const { locationArr, attachment } = newPostDetails
+    let att = ''
+    if (attachment !== '')
+        att = await upload(attachment)
 
     const coords = await getCoordinates({ city: locationArr[0], street: locationArr[1], number: locationArr[2] }, () => { }, true)
 
-    const newPost = await axios.post(`${serverUrl}jobs`, { ...newPostDetails, coords }, {
+    const newPost = await axios.post(`${serverUrl}jobs`, { ...newPostDetails, coords, attachment: att }, {
         headers: {
             "Authorization": `Bearer ${storageToken}`
         }
     })
     return newPost
 
+}
+
+export const areJobsListsEqual = (list1, list2) => {
+    if (list1.length !== list2.length)
+        return false
+    for (let i = 0; i < list1.length; i++) {
+        if (list1[i]._id !== list2[i]._id)
+            return false
+    }
+    return true
 }

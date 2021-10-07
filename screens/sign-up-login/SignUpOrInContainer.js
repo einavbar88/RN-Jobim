@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { useContext, useState } from 'react';
-import { Dimensions, Image, StyleSheet, View } from 'react-native';
+import { Dimensions, Image, StyleSheet, View, SafeAreaView } from 'react-native';
 import { UsersContext } from '../../context/UsersContext';
 import SignUpScreen from './SignUpScreen';
 
@@ -37,12 +37,12 @@ const SignUpOrInContainer = () => {
 
 
     return (
-        <>
+        <SafeAreaView style={{ flex: 1 }}>
             <SignUpScreen {...props} />
             <View style={{ width: windowWidth - 150, height: 120 }}>
                 <Image source={require("../../icons/bkg_newjob_1.png")} style={styles.img} />
             </View>
-        </>
+        </SafeAreaView>
     );
 };
 

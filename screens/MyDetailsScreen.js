@@ -10,12 +10,24 @@ import { serverUrl } from '../env/env';
 import ChangeCity from './change-details/ChangeCity';
 import ChangeYear from './change-details/ChangeYear';
 import ChangeEmail from './change-details/ChangeEmail';
-import { uploadImage } from '../auxFunc';
+import { upload } from '../auxFunc';
 
 export const myDetailsScreenOptions = (navigation, route, context) => {
 
     const routeName = getFocusedRouteNameFromRoute(route) ?? 'main';
-    const { changeUser, dipatchUserChanges, user, setUser, storageToken } = context
+    const { changeUser, dipatchUserChanges, user, setUser, storageToken, setLoading } = context
+
+    const onSave = async () => {
+        setLoading(true)
+        let img = user.user.avatar
+        if (changeUser.avatar)
+            img = await upload(changeUser.avatar)
+        const newUser = await axios.patch(`${serverUrl}users/${user.user._id}`, { updates: { ...changeUser, avatar: img } }, { headers: { 'Authorization': `Bearer ${storageToken}` } })
+        dipatchUserChanges('RESET')
+        setLoading(false)
+        navigation.goBack()
+        setUser({ user: newUser.data })
+    }
 
     return ({
         headerRight: () => {
@@ -26,12 +38,7 @@ export const myDetailsScreenOptions = (navigation, route, context) => {
                     </TouchableOpacity>
                 )
             return (
-                <TouchableOpacity onPress={async () => {
-                    const newUser = await axios.patch(`${serverUrl}users/${user.user._id}`, { updates: changeUser }, { headers: { 'Authorization': `Bearer ${storageToken}` } })
-                    setUser({ user: newUser.data })
-                    dipatchUserChanges('RESET')
-                    navigation.goBack()
-                }}>
+                <TouchableOpacity onPress={onSave}>
                     <Text style={styles.settingsBtn}>שמור</Text>
                 </TouchableOpacity>
             )
