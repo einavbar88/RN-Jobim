@@ -133,7 +133,6 @@ const styles = StyleSheet.create({
     signupBtnText: {
         fontSize: 18,
         color: colors.orange,
-        marginTop: 40
     }
 
 })

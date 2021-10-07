@@ -24,12 +24,17 @@ const DrawerContent = (props, setUser, user, storageToken, setStorageToken) => {
             console.log(e)
         }
     }
+
+    let profileImg = require("../icons/icon_menu_pic_placeholder.png")
+    if (user?.user?.avatar !== '')
+        profileImg = { uri: user.user.avatar }
+
     return (
         <>
             <DrawerContentScrollView {...props}>
                 <View style={styles.drawerTopSection}>
-                    <Image style={{ width: 30, height: 30 }} source={require("../icons/icon_menu_pic_placeholder.png")} />
-                    <Text style={{ marginTop: 25 }}>{user?.user?.firstName}</Text>
+                    <Image style={{ width: 30, height: 30, marginTop: 5, borderRadius: 100 }} source={profileImg} />
+                    <Text style={{ marginTop: 15 }}>{user?.user?.firstName}</Text>
                     <TouchableOpacity onPress={logout}>
                         <Text style={{ color: colors.orange }}>התנתקות</Text>
                     </TouchableOpacity>

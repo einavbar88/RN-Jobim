@@ -9,7 +9,7 @@ export default function App() {
   return (
     <UsersProvider>
       <PostsProvider>
-        <View style={{ paddingTop: Platform.OS === "android" && !Platform.constants.Model.includes('SM') ? StatusBar.currentHeight : 0, flex: 1 }}>
+        <View style={{ paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0, flex: 1 }}>
           <AppNavigator />
           <Loading />
         </View>
