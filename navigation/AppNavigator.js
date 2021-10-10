@@ -55,7 +55,7 @@ const AppNavigator = ({ navigation }) => {
 
     return (
         appStartDelay ? <View style={styles.screen}>
-            <Image style={styles.img} source={require('../assets/splash.png')} />
+            <Image style={styles.img} source={require('../assets/splash1.png')} />
         </View> :
             isSignUpOrIn ?
                 <SignUpOrInContainer /> :

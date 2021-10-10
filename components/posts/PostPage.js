@@ -29,6 +29,9 @@ const PostPage = ({ data, coordinates, distance }) => {
 
     useEffect(() => {
         getOwnerData()
+        return () => {
+            setOwnerData(null)
+        }
     }, [])
 
 
