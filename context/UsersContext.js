@@ -12,18 +12,23 @@ const UsersProvider = (props) => {
     const [isSignUpOrIn, setIsSignUpOrIn] = useState(true)
     const [changeUser, dipatchUserChanges] = useReducer(ChangeUserReducer, {})
     const [storageToken, setStorageToken] = useState('')
-
+    const [appStartDelay, setAppStartDelay] = useState(true)
 
     const getToken = async () => {
         try {
             const token = await AsyncStorage.getItem('token')
-            if (token === null)
+            if (token === null) {
+                setAppStartDelay(false)
                 return setIsSignUpOrIn(true)
+            }
             else {
                 setStorageToken(token)
                 axios.post(`${serverUrl}users/login-token`, {
                     token
-                }).then(res => setUser(res.data))
+                }).then(res => {
+                    setUser(res.data)
+                    setAppStartDelay(false)
+                })
             }
         } catch (e) {
             console.log(e)
@@ -35,9 +40,10 @@ const UsersProvider = (props) => {
     }, [])
 
     useEffect(() => {
-        if (user?.user == null)
-            return setIsSignUpOrIn(true)
-        return setIsSignUpOrIn(false)
+        if (!user || !user?.user)
+            setIsSignUpOrIn(true)
+        else
+            setIsSignUpOrIn(false)
     }, [user])
 
 
@@ -48,7 +54,8 @@ const UsersProvider = (props) => {
                 user, setUser,
                 isSignUpOrIn, setIsSignUpOrIn,
                 changeUser, dipatchUserChanges,
-                storageToken, setStorageToken
+                storageToken, setStorageToken,
+                appStartDelay, setAppStartDelay
             }}
         >
             {props.children}

@@ -10,7 +10,7 @@ const windowWidth = Dimensions.get('window').width;
 
 const SignUpOrInContainer = () => {
 
-    const { setIsSignUpOrIn, setUser, setStorageToken } = useContext(UsersContext)
+    const { setUser, setStorageToken } = useContext(UsersContext)
 
     const [isSignUp, setIsSignUp] = useState(true)
 
@@ -23,7 +23,6 @@ const SignUpOrInContainer = () => {
     }
 
     const onSubmit = async (user, token) => {
-        setIsSignUpOrIn(false)
         setUser(user)
         storeToken(token)
         setStorageToken(token)

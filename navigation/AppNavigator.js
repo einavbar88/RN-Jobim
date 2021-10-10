@@ -45,23 +45,18 @@ const windowWidth = Dimensions.get('window').width;
 
 const AppNavigator = ({ navigation }) => {
 
-    const { isSignUpOrIn, setUser, user, changeUser, dipatchUserChanges, storageToken, setStorageToken } = useContext(UsersContext)
+    const { appStartDelay, isSignUpOrIn, setUser, user, changeUser, dipatchUserChanges, storageToken, setStorageToken } = useContext(UsersContext)
     const { newPostDetails, dispatchNewPostDetails, setLoading } = useContext(PostsContext)
 
-    const [entryTimeout, setEntryTimeout] = useState(true)
 
     useEffect(() => {
-        setTimeout(() => {
-            return setEntryTimeout(false)
-        }, 2000)
         dispatchNewPostDetails({ type: "RESET" })
     }, [])
 
     return (
-        entryTimeout ?
-            <View style={styles.screen}>
-                <Image style={styles.img} source={require('../icons/bg.jpeg')} />
-            </View> :
+        appStartDelay ? <View style={styles.screen}>
+            <Image style={styles.img} source={require('../assets/splash.png')} />
+        </View> :
             isSignUpOrIn ?
                 <SignUpOrInContainer /> :
                 <NavigationContainer>
