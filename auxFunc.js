@@ -62,21 +62,18 @@ export const getCurrentLocation = async (setLocation) => {
         setErrorMsg('Permission to access location was denied');
         return;
     }
-
     let location = await Location.getCurrentPositionAsync({});
-
-    return setLocation(location);
+    if (location)
+        setLocation(location);
 }
 
-export const getCoordinates = async (address, setCoordinates, post) => {
+export const getCoordinates = async (address, post) => {
     const { city, street, number } = address
     try {
         const res = await axios.get(`${geocodeAPIUrl}address=${street} ${number} ${city}&key=${googleAPIKey}`)
         if (res.data.results[0]) {
             const { lng, lat } = res.data.results[0].geometry.location
-            if (post)
-                return [lat, lng]
-            setCoordinates([lat, lng])
+            return [lng, lat]
         }
     } catch (e) {
         console.log(e)
@@ -84,25 +81,49 @@ export const getCoordinates = async (address, setCoordinates, post) => {
 
 }
 
-export const pickImage = async () => {
+export const pickImage = async (selfie) => {
     const getPermissions = await (async () => {
-        if (Platform.OS !== 'web') {
-            const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-            if (status !== 'granted') {
-                alert('Sorry, we need camera roll permissions to make this work!');
+        if (selfie) {
+            if (Platform.OS !== 'web') {
+                const { status } = await ImagePicker.requestCameraPermissionsAsync();
+                if (status !== 'granted') {
+                    alert('Sorry, we need camera roll permissions to make this work!');
+                }
+            }
+        } else {
+            if (Platform.OS !== 'web') {
+                const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+                if (status !== 'granted') {
+                    alert('Sorry, we need camera roll permissions to make this work!');
+                }
             }
         }
     })();
-    let result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        allowsEditing: true,
-        aspect: [1, 1],
-        quality: 1,
-    });
-    if (!result.cancelled) {
-        const img64 = (await ImageManipulator.manipulateAsync(result.uri, [], { base64: true })).base64
-        return { uri: result.uri, img64 }
+    if (selfie) {
+        const selfieImage = await ImagePicker.launchCameraAsync({
+            allowsEditing: true,
+            aspect: [1, 1],
+            quality: 1
+        })
+        if (!selfieImage.cancelled) {
+            const img64 = (await ImageManipulator.manipulateAsync(selfieImage.uri, [], { base64: true })).base64
+            return { uri: selfieImage.uri, img64 }
+        }
     }
+    else {
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing: true,
+            aspect: [1, 1],
+            quality: 1,
+        });
+        if (!result.cancelled) {
+            const img64 = (await ImageManipulator.manipulateAsync(result.uri, [], { base64: true })).base64
+            return { uri: result.uri, img64 }
+        }
+    }
+
+
 };
 
 export const upload = async (img) => {

@@ -11,7 +11,7 @@ import MainScreen, { mainScreenOptions } from '../screens/MainScreen';
 import MyDetailsScreen, { myDetailsScreenOptions } from '../screens/MyDetailsScreen';
 import NewJobPostScreen, { newJobPostScreenOptions } from '../screens/NewJobPostScreen';
 import AlertsScreen from '../screens/AlertsScreen';
-import MyJobsScreen from '../screens/MyJobsScreen';
+import MyJobsScreen, { myJobsScreenOptions } from '../screens/MyJobsScreen';
 import { Dimensions, Image, StatusBar, StyleSheet, View } from 'react-native';
 
 import DrawerContent from '../components/DrawerContent';
@@ -72,13 +72,15 @@ const AppNavigator = ({ navigation }) => {
                             name="AlertsScreen"
                             component={AlertsScreen}
                             options={({ navigation }) => ({
-                                title: "התראות"
+                                title: "התראות",
+                                ...myJobsScreenOptions(navigation)
                             })} />
                         <Drawer.Screen
                             name="MyJobsScreen"
                             component={MyJobsScreen}
                             options={({ navigation }) => ({
                                 title: "הג'ובים שלי",
+                                ...myJobsScreenOptions(navigation)
                             })} />
                         <Drawer.Screen
                             name="MainScreen"

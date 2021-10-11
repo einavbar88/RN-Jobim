@@ -8,7 +8,7 @@ export const initialState = {
         title: '',
         description: ''
     },
-    location: '',
+    location: [],
     locationValid: false,
     locationArr: [],
     addressText: { city: '', street: '', number: '' },

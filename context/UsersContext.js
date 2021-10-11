@@ -28,6 +28,8 @@ const UsersProvider = (props) => {
                 }).then(res => {
                     setUser(res.data)
                     setAppStartDelay(false)
+                }).catch(e => {
+                    setAppStartDelay(false)
                 })
             }
         } catch (e) {

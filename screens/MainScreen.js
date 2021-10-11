@@ -30,25 +30,18 @@ const MainScreen = (props) => {
 
     const { jobsList, setJobsList, location, setLocation, filters, setCurrentFilters, setLoading } = useContext(PostsContext)
 
-    const isCloseEnough = (p1, p2) => {
-        const distance = getDistanceFromLatLonInKm(p1.lat, p1.lng, p2.lat, p2.lng)
-        return distance <= 3
-    }
-
     const getJobs = async (around, roles) => {
         setLoading(true)
-        const jobsLocations = (await axios.get(`${serverUrl}jobs/locations`)).data
-        const filtered = jobsLocations.filter((j) => isCloseEnough(j.coords, around))
         const jobs = (await axios.get(`${serverUrl}jobs/near-me`, {
             params: {
-                _id: filtered.map(j => j._id),
+                ...around,
                 roles
             }
         })).data
         setLoading(false)
         setJobsList(jobs.length > 0 ? jobs.sort((a, b) => {
-            const aDistance = getDistanceFromLatLonInKm(a.coords.lat, a.coords.lng, location.lat, location.lng)
-            const bDistance = getDistanceFromLatLonInKm(b.coords.lat, b.coords.lng, location.lat, location.lng)
+            const aDistance = getDistanceFromLatLonInKm(a.coords.coordinates[1], a.coords.coordinates[0], location.lat, location.lng)
+            const bDistance = getDistanceFromLatLonInKm(b.coords.coordinates[1], b.coords.coordinates[0], location.lat, location.lng)
             return aDistance > bDistance
         }) : [])
     }
@@ -59,7 +52,8 @@ const MainScreen = (props) => {
     }
 
     useEffect(() => {
-        getJobs(location, filters.jobsTypes)
+        if (location)
+            getJobs(location, filters.jobsTypes)
     }, [location])
 
     return (

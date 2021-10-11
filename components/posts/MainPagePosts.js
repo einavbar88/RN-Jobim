@@ -12,13 +12,13 @@ const windowWidth = Dimensions.get('window').width;
 const MainPagePosts = ({ data, onPress, isPostPage }) => {
 
     const { company, branch, role, adTitle, coords, addressText, imageUrl } = data.item
-
+    const { coordinates } = coords
     const { location } = useContext(PostsContext)
     const [distance, setDistance] = useState(null)
 
     useEffect(() => {
         if (location) {
-            const dist = getDistanceFromLatLonInKm(location.lat, location.lng, coords.lat, coords.lng)
+            const dist = getDistanceFromLatLonInKm(location.lat, location.lng, coordinates[1], coordinates[0])
             setDistance(dist.toFixed(3))
         }
     }, [location])

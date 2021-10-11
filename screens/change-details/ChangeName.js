@@ -1,16 +1,14 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Dimensions, Image, StyleSheet, Text, TouchableOpacity, View, Platform } from 'react-native';
+import { Dimensions, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import CustomInput from '../../components/ui/CustomInput';
 import { UsersContext } from '../../context/UsersContext';
-import * as ImagePicker from 'expo-image-picker';
-import * as ImageManipulator from 'expo-image-manipulator';
 import { pickImage } from '../../auxFunc';
 
 const windowWidth = Dimensions.get('window').width;
 
 const ChangeName = () => {
 
-    const { user, changeUser, dipatchUserChanges } = useContext(UsersContext)
+    const { user, dipatchUserChanges } = useContext(UsersContext)
 
     const [firstName, setFirstName] = useState(user.user.firstName)
     const [lastName, setLastName] = useState(user.user.lastName)
@@ -19,7 +17,7 @@ const ChangeName = () => {
 
 
     const chooseImage = async () => {
-        const { uri, img64 } = await pickImage()
+        const { uri, img64 } = await pickImage(true)
         setImage(uri)
         setImg64Source(img64)
     };

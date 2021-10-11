@@ -12,7 +12,7 @@ const PostsProvider = (props) => {
         ...initialState,
         name: { ...initialState.name },
         description: { ...initialState.description },
-        location: { ...initialState.location }
+        location: [...initialState.location]
     })
     const [filters, dispatchFilters] = useReducer(FiltersReducer, filtersInitialState)
     const [currentFilters, setCurrentFilters] = useState(filtersInitialState)
