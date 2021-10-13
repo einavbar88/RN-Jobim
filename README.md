@@ -4,7 +4,7 @@
 A replica of drushim.co.il's JOBIM app from 2021, it includes:
 - REST API (Node.JS and Express) 
 - DB in MongoDB
-- Cross-Platform Mobile App in React Native
+- Cross-Platform Mobile App in React Native [EXPO]
 
 ### Technologies
 - React Native
@@ -14,17 +14,20 @@ A replica of drushim.co.il's JOBIM app from 2021, it includes:
 - GoogleAPI
 
 ### Screenshots
+<div>
+<img src="/screenshots/1.png" alt="main page" height="540" width="255" />
+<img src="/screenshots/2.png" alt="main page filter by job" height="540" width="255" />
+<img src="/screenshots/3.png" alt="main page filter by location" height="540" width="255" /> 
+<img src="/screenshots/4.png" alt="post page" height="540" width="255" />
+<img src="/screenshots/5.png" alt="post page" height="540" width="255" />
+<img src="/screenshots/6.png" alt="favorites page" height="540" width="255" />
+<img src="/screenshots/7.png" alt="my details screen" height=540"" width="255" />
+<img src="/screenshots/8.png" alt="change name and selfie page" height="540" width="255" />
+<img src="/screenshots/9.png" alt="add new post page - company name" height="540" width="255" />
+<img src="/screenshots/10.png" alt="add new post page - job" height="540" width="255" />
+<img src="/screenshots/11.png" alt="add new post page - job description" height="540" width="255" />
+<img src="/screenshots/12.png" alt="add new post page - attachments" height="540" width="255" />
+ </div>
 
-![main page](/screenshots/1.png)
-![main page filter by job](/screenshots/2.png)
-![main page filter by location](/screenshots/3.png)
-![post page](/screenshots/4.png)
-![post page](/screenshots/5.png)
-![favorites](/screenshots/6.png)
-![my details screen](/screenshots/7.png)
-![change name and selfie page](/screenshots/8.png)
-![add new post page - company name](/screenshots/9.png)
-![add new post page - job](/screenshots/10.png)
-![add new post page - job description](/screenshots/11.png)
-![add new post page - attachments](/screenshots/12.png)
+
 
